@@ -727,14 +727,27 @@ public class Player extends Entity implements Serializable {
 
     //buff作用
     public void buffsEffect() {
-        if (buffs[0] != null) {
-            buffs[0].effect(this);
+        for (Buff b:buffs) {
+            if (b != null) {
+                if(b.life > 0){
+                    b.effect(this);
+                }else{
+                    b.finalEffect(this);
+                    b = null;
+                }
+            }
         }
-        if (buffs[1] != null) {
-            buffs[1].effect(this);
-        }
-        if (buffs[2] != null) {
-            buffs[2].effect(this);
+    }
+
+    public void newBuff(Buff b){
+        int emptyBuff = 0;
+        for (Buff b1:buffs
+             ) {
+            if(b1 != null){
+                emptyBuff++;
+            }else {
+                b1 = b;
+            }
         }
     }
 

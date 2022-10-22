@@ -23,5 +23,10 @@ public class Poison extends Buff {
         else entity.HP = 0;
         this.life--;
     }
+
+    @Override
+    public void finalEffect(Entity entity) {
+
+    }
 }
 

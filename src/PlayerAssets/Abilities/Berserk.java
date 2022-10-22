@@ -6,6 +6,8 @@ import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
 
+import java.util.List;
+
 import static Util.FrameUtil.OTHER_FRAME;
 
 public class Berserk extends Ability {
@@ -28,7 +30,7 @@ public class Berserk extends Ability {
         OTHER_FRAME.write("你释放了" + this.name);
         OTHER_FRAME.write("你的力量增幅了" + this.times + "倍!");
         OTHER_FRAME.out();
-        p.buffs[2] = new BerserkBuff(times,time);
+        p.newBuff(new BerserkBuff(times,time));
         p.MP -= this.MpReduce;
         return 0;
     }

@@ -13,9 +13,12 @@ public class Shocking extends Buff {
         if (entity instanceof Player) {
             ((Player) entity).actChance = false;
             this.life--;
-            if (this.life == 0){
-                ((Player) entity).actChance = true;
-            }
+
         }
+    }
+
+    @Override
+    public void finalEffect(Entity entity) {
+            ((Player) entity).actChance = true;
     }
 }

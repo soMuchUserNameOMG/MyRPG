@@ -14,4 +14,6 @@ public abstract class Buff implements Serializable {
     public int level;
 
     public abstract void effect(Entity entity);
+
+    public abstract void finalEffect(Entity entity);
 }

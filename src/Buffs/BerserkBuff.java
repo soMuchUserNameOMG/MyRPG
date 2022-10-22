@@ -6,6 +6,7 @@ import PlayerAssets.Player;
 public class BerserkBuff extends Buff {
 
     public boolean effected;
+    public double temp;
     public BerserkBuff(double times,int life) {
         this.times = times;
         this.life = life;
@@ -16,13 +17,17 @@ public class BerserkBuff extends Buff {
 
     @Override
     public void effect(Entity entity) {
+        if (this.effected) return;
         if (entity instanceof Player) {
-            if (this.effected) return;
-            double temp = ((Player) entity).strength;
+            this.temp = ((Player) entity).strength;
             ((Player) entity).strength = ((Player) entity).strength * times;
-            if (this.life == 0) {
-                ((Player) entity).strength = temp;
-            }
+        }
+    }
+
+    @Override
+    public void finalEffect(Entity entity) {
+        if(entity instanceof Player){
+            ((Player) entity).strength = temp;
         }
     }
 }
