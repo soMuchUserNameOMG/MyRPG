@@ -25,7 +25,6 @@ public class AutoSaveTask extends TimerTask {
                 }
                 a.LastRelease = -1;
             }
-            p.buffClean();
             GameFileController.savePlayer(p);
     }
 }

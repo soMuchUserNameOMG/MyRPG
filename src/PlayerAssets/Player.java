@@ -158,7 +158,6 @@ public class Player extends Entity implements Serializable {
                         fightCount = fightCount - 1;
                     }
                 }
-                buffsCheck();
             } catch (NumberFormatException e) {
                 System.out.println("请正确输入数值!");
                 fightCount = fightCount - 1;
@@ -168,13 +167,13 @@ public class Player extends Entity implements Serializable {
             FIGHT_FRAME.write("战斗结束,你输了!");
             FIGHT_FRAME.out();
             GameFunctionsHelper.blankOperate();
+            buffClean();
             MAIN_FRAME.selfClean(MAIN_FRAME);
             MAIN_FRAME.title(Main.title);
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
             this.HP = 10;
             this.abilities[0].LastRelease = -1;
-            buffClean();
         } else if (m.HP <= 0) {
             exp = exp + m.giveExp();
             FIGHT_FRAME.write("战斗结束,你获得了胜利!");
@@ -182,13 +181,13 @@ public class Player extends Entity implements Serializable {
             levelUp(FIGHT_FRAME);
             FIGHT_FRAME.out();
             GameFunctionsHelper.blankOperate();
+            buffClean();
             MAIN_FRAME.selfClean(MAIN_FRAME);
             MAIN_FRAME.title(Main.title);
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
             this.walkDistance++;
             this.abilities[0].LastRelease = -1;
-            buffClean();
             this.HP = maxHP;
         } else {
             System.out.println("未知错误!");
@@ -255,7 +254,6 @@ public class Player extends Entity implements Serializable {
                         fightCount = fightCount - 1;
                     }
                 }
-                buffsCheck();
             } catch (NumberFormatException e) {
                 System.out.println("请正确输入数值!");
                 fightCount = fightCount - 1;
@@ -274,13 +272,13 @@ public class Player extends Entity implements Serializable {
             levelUp(FIGHT_FRAME);
             FIGHT_FRAME.out();
             GameFunctionsHelper.blankOperate();
+            buffClean();
             MAIN_FRAME.selfClean(MAIN_FRAME);
             MAIN_FRAME.title(Main.title);
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
             this.walkDistance++;
             this.abilities[0].LastRelease = -1;
-            buffClean();
             this.HP = maxHP;
         } else {
             System.out.println("未知错误!");
@@ -751,16 +749,6 @@ public class Player extends Entity implements Serializable {
         }
     }
 
-    public void buffsCheck(){
-        for (Buff buff:buffs) {
-            if(buff != null) {
-                if (buff.life <= 0) {
-                    buff = null;
-                }
-            }
-        }
-    }
-
     public void explore(Frame f) {
         f.write("正在探索中...");
         this.simpleInfo(f);
@@ -808,7 +796,7 @@ public class Player extends Entity implements Serializable {
         for (Buff buff:buffs) {
             if (buff != null){
                 buff.life = 0;
-                buff.effect(this);
+                buff.finalEffect(this);
             }
         }
         Arrays.fill(this.buffs, null);
