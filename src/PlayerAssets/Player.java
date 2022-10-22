@@ -746,7 +746,7 @@ public class Player extends Entity implements Serializable {
             if(b1 != null){
                 emptyBuff++;
             }else {
-                b1 = b;
+               buffs[emptyBuff] = b;
             }
         }
     }

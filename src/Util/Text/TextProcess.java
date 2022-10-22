@@ -1,6 +1,7 @@
 package Util.Text;
 
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 import frame.Frame;
 
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public class TextProcess {
         f.title(Main.Main.title);
         f.buttonChinese("任意键继续");
         f.noCleanOut();
-        new Scanner(System.in).nextInt();
+        GameFunctionsHelper.blankOperate();
     }
 
     public static void enterGameText() {

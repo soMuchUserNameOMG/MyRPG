@@ -2,6 +2,7 @@ package Buffs;
 
 import Entities.Entity;
 import PlayerAssets.Player;
+import Util.GameFileController;
 
 public class BerserkBuff extends Buff {
 
@@ -21,6 +22,8 @@ public class BerserkBuff extends Buff {
         if (entity instanceof Player) {
             this.temp = ((Player) entity).strength;
             ((Player) entity).strength = ((Player) entity).strength * times;
+            GameFileController.setStuck(true);
+            this.effected = true;
         }
     }
 
@@ -29,5 +32,6 @@ public class BerserkBuff extends Buff {
         if(entity instanceof Player){
             ((Player) entity).strength = temp;
         }
+        GameFileController.setStuck(false);
     }
 }

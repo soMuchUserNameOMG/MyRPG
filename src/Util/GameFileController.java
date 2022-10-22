@@ -77,4 +77,8 @@ public class GameFileController {
             return new Main();
         }
     }
+
+    public static void setStuck(boolean b){
+        autoSaveThread.stuckFlag = b;
+    }
 }
