@@ -225,9 +225,6 @@ public class Player extends Entity implements Serializable {
                         else b.bossAbilityRelease(this);
                         buffsEffect();
                         this.weapon.durability = (int) (this.weapon.durability - b.defense * 0.5);
-//                        FIGHT_FRAME.write("==========================");
-//                        FIGHT_FRAME.title(Main.title);
-//                        FIGHT_FRAME.out();
 
                         // 这个我就不动你的了，不是因为懒
                         GameFunctionsHelper.endRound();

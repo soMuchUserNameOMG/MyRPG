@@ -11,7 +11,7 @@ import java.util.Timer;
 
 public class AutoSaveThread extends Thread {
     Player p;
-    boolean stuckFlag;
+    public volatile boolean stuckFlag;
 
     public AutoSaveThread() {
 
