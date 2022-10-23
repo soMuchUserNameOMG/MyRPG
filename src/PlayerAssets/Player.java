@@ -92,6 +92,7 @@ public class Player extends Entity implements Serializable {
         FIGHT_FRAME.selfClean(FIGHT_FRAME);
         FIGHT_FRAME.write("你遭遇了怪物,进入战斗状态!!");
         this.simpleInfo(FIGHT_FRAME);
+        GameFileController.setStuck(true);
         for (int fightCount = 1; this.HP > 0 && m.HP > 0; fightCount++) {
             fightText(fightCount, m.name, m.HP, m.maxHP, HP, maxHP, m.level, MP, maxMP);
             buffsEffect();
@@ -173,7 +174,8 @@ public class Player extends Entity implements Serializable {
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
             this.HP = 10;
-            this.abilities[0].LastRelease = -1;
+            resetAbility();
+            GameFileController.setStuck(false);
         } else if (m.HP <= 0) {
             exp = exp + m.giveExp();
             FIGHT_FRAME.write("战斗结束,你获得了胜利!");
@@ -187,10 +189,12 @@ public class Player extends Entity implements Serializable {
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
             this.walkDistance++;
-            this.abilities[0].LastRelease = -1;
+            resetAbility();
             this.HP = maxHP;
+            GameFileController.setStuck(false);
         } else {
             System.out.println("未知错误!");
+            GameFileController.setStuck(false);
         }
 //        FIGHT_FRAME.title(Main.title);
 //        FIGHT_FRAME.out();
@@ -202,6 +206,7 @@ public class Player extends Entity implements Serializable {
         FIGHT_FRAME.selfClean(FIGHT_FRAME);
         FIGHT_FRAME.write("你遭遇了怪物,进入战斗状态!!");
         this.simpleInfo(FIGHT_FRAME);
+        GameFileController.setStuck(true);
         for (int fightCount = 1; this.HP > 0 && b.HP > 0; fightCount++) {
             fightText(fightCount, b.name, b.HP, b.maxHP, HP, maxHP, b.level, MP, maxMP);
             try {
@@ -259,8 +264,9 @@ public class Player extends Entity implements Serializable {
         if (this.HP <= 0) {
             FIGHT_FRAME.write("战斗结束,你输了!");
             this.HP = 10;
-            this.abilities[0].LastRelease = -1;
+            resetAbility();
             buffClean();
+            GameFileController.setStuck(false);
         } else if (b.HP <= 0) {
             exp = exp + b.giveExp();
             FIGHT_FRAME.write("战斗结束,你获得了胜利!");
@@ -275,10 +281,12 @@ public class Player extends Entity implements Serializable {
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
             this.walkDistance++;
-            this.abilities[0].LastRelease = -1;
+            resetAbility();
             this.HP = maxHP;
+            GameFileController.setStuck(false);
         } else {
             System.out.println("未知错误!");
+            GameFileController.setStuck(false);
         }
     }
 
@@ -452,6 +460,15 @@ public class Player extends Entity implements Serializable {
         FIGHT_FRAME.out();
         abilities[0].LastRelease = fightCount;
         return true;
+    }
+
+    public void resetAbility(){
+        for (Ability a:abilities
+             ) {
+            if(!(a instanceof EmptyAbility)){
+                a.LastRelease = -1;
+            }
+        }
     }
 
     //玩家简要信息(显示在主菜单中)

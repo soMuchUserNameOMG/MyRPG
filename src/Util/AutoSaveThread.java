@@ -11,7 +11,7 @@ import java.util.Timer;
 
 public class AutoSaveThread extends Thread {
     Player p;
-    public volatile boolean stuckFlag;
+    AutoSaveTask autoSaveTask = new AutoSaveTask();
 
     public AutoSaveThread() {
 
@@ -23,11 +23,13 @@ public class AutoSaveThread extends Thread {
 
     @Override
     public void run() {
-        if(!stuckFlag){
             Timer autoSaveTimer = new Timer();
-            AutoSaveTask autoSaveTask = new AutoSaveTask(p);
+            this.autoSaveTask.p = this.p;
             autoSaveTimer.schedule(autoSaveTask, new Date(), 5000 * 5);
-        }
+    }
+
+    public void setStuck(boolean b){
+        this.autoSaveTask.stuckFlag = b;
     }
 
 }

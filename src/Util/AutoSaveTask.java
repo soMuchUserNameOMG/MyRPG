@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 public class AutoSaveTask extends TimerTask {
     Player p;
+    public volatile boolean stuckFlag;
 
     public AutoSaveTask(Player p) {
         this.p = p;
@@ -19,12 +20,14 @@ public class AutoSaveTask extends TimerTask {
 
     @Override
     public void run() {
-        for (Ability a : p.abilities) {
+        if(!stuckFlag) {
+            for (Ability a : p.abilities) {
                 if (a instanceof EmptyAbility) {
                     break;
                 }
                 a.LastRelease = -1;
             }
             GameFileController.savePlayer(p);
+        }
     }
 }
