@@ -1,7 +1,7 @@
 package PlayerAssets.Abilities;
 
 import Buffs.Poison;
-import Entities.Bosses.Boss;
+import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
@@ -26,24 +26,9 @@ public class PoisonMist extends Ability {
             return 1;
         }
         OTHER_FRAME.write("你选择释放了" + this.name);
-        m.newBuff(new Poison(damage, time));
+        if(!(m instanceof Boss)) m.newBuff(new Poison(damage, time));
         OTHER_FRAME.write("对怪物造成了中毒效果!");
         p.MP -= MpReduce;
-        return 0;
-    }
-
-    @Override
-    public double abilityRelease(Boss b) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
-            OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
-            OTHER_FRAME.out();
-            return 1;
-        }
-        OTHER_FRAME.write("你选择释放了" + this.name);
-        OTHER_FRAME.write("对方是boss级生物,效果不佳!");
-        p.MP -= MpReduce;
-        OTHER_FRAME.write("TIPS:boss不受大部分buff影响");
         return 0;
     }
 

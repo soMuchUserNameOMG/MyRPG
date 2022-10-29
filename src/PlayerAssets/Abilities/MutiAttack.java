@@ -1,7 +1,6 @@
 package PlayerAssets.Abilities;
 
 
-import Entities.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Util.GameFunctionsHelper;
 
@@ -20,13 +19,6 @@ public class MutiAttack extends Ability {
     public double abilityRelease(Monster m) {
         double damage = this.damage * this.frequency - m.defense;
         m.HP = m.HP - damage;
-        return damage;
-    }
-
-    @Override
-    public double abilityRelease(Boss b) {
-        double damage = this.damage * this.frequency - b.defense;
-        b.HP = b.HP - damage;
         return damage;
     }
 

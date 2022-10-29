@@ -1,6 +1,6 @@
 package PlayerAssets.Abilities;
 
-import Entities.Bosses.Boss;
+import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Monster;
 import PlayerAssets.Player;
 
@@ -26,8 +26,6 @@ public abstract class Ability implements Serializable {
     }
 
     public abstract double abilityRelease(Monster m);
-
-    public abstract double abilityRelease(Boss b);
 
     public boolean isCoolingDown(int fightCount) {
         if ((fightCount - LastRelease) >= coolDown) {

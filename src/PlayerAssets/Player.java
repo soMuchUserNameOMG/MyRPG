@@ -1,9 +1,9 @@
 package PlayerAssets;
 
 import Buffs.Buff;
-import Entities.Bosses.Boss;
 import Entities.Entity;
 import Entities.InterFaces.Dodgeable;
+import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Abilities.*;
@@ -92,58 +92,109 @@ public class Player extends Entity implements Serializable {
         FIGHT_FRAME.selfClean(FIGHT_FRAME);
         FIGHT_FRAME.write("你遭遇了怪物,进入战斗状态!!");
         this.simpleInfo(FIGHT_FRAME);
+        //停止自动保存
         GameFileController.setStuck(true);
+        /*
+         * 进入战斗循环
+         * 一方hp小于等于0时自动退出
+         * */
         for (int fightCount = 1; this.HP > 0 && m.HP > 0; fightCount++) {
-            fightText(fightCount, m.name, m.HP, m.maxHP, HP, maxHP, m.level, MP, maxMP);
+            //回合开始前buff作用
             buffsEffect();
+            /*
+             * 如玩家受到震撼效果,则会进入此分支
+             * 在此分支中,玩家无法行动
+             * 分支结束后直接进入下一回合
+             * */
+            if (!this.actChance) {
+                double monsterDamage = m.strength - this.defense - this.armor.armorValue;
+                if (monsterDamage <= 0) monsterDamage = 1;
+                FIGHT_FRAME.write("现在是战斗的第" + fightCount + "回合!");
+                FIGHT_FRAME.write("你受到了震撼吼的影响,你本回合无法行动!");
+                this.HP = this.HP - monsterDamage;
+                FIGHT_FRAME.write("怪物对你造成了" + monsterDamage + "点伤害");
+                FIGHT_FRAME.title(Main.title);
+                FIGHT_FRAME.out();
+                GameFunctionsHelper.endRound();
+                continue;
+            }
+            //以下两行代码输出通常战斗文本
+            this.simpleInfo(FIGHT_FRAME);
+            fightText(fightCount, m.name, m.HP, m.maxHP, HP, maxHP, m.level, MP, maxMP);
+            //主要战斗功能模块,玩家操作选择
             try {
                 int fightFunction = Integer.parseInt(fightSc.nextLine());
                 switch (fightFunction) {
+                    //普通攻击
                     case 1 -> {
+                        //计算伤害值
                         double playerDamage = this.strength + this.weapon.damage - m.defense;
                         double monsterDamage = m.strength - this.defense - this.armor.armorValue;
+                        //防止负数
                         if (playerDamage <= 0) playerDamage = 1;
                         if (monsterDamage <= 0) monsterDamage = 1;
                         FIGHT_FRAME.write("你对怪物造成了" + playerDamage + "点伤害!");
                         this.simpleInfo(FIGHT_FRAME);
                         FIGHT_FRAME.title(Main.title);
                         m.HP = m.HP - playerDamage;
+                        //闪避成功分支,玩家不受伤害
                         if (dodge(m)) {
                             FIGHT_FRAME.write("[你闪避了怪物的攻击!]");
                             this.simpleInfo(FIGHT_FRAME);
                             FIGHT_FRAME.title(Main.title);
-                            FIGHT_FRAME.noCleanOut();
                         } else {
+                            //闪避失败分支
                             FIGHT_FRAME.write("怪物对你造成了" + monsterDamage + "点伤害");
                             this.simpleInfo(FIGHT_FRAME);
                             FIGHT_FRAME.title(Main.title);
                             this.HP = this.HP - monsterDamage;
-                            FIGHT_FRAME.noCleanOut();
                         }
-                        if (m instanceof Dodgeable) ((Dodgeable) m).abilityRelease(this, playerDamage);
-                        else m.abilityRelease(this);
+                        //怪物闪避分支
+                        if (m instanceof Dodgeable) {
+                            /*
+                            * 怪物通过技能释放的方式进行闪避
+                            * 技能释放方法有布尔返回值
+                            * 如果返回false,则说明未闪避成功
+                            * 进行正常的文本输出
+                            * */
+                            if (!((Dodgeable) m).abilityRelease(this, playerDamage)) FIGHT_FRAME.out();
+                        }
+                        /*
+                        * 普通怪物释放技能分支
+                        * 通过返回布尔值判断是否释放成功
+                        * 返回true则在此方法内不进行输出(因为在释放技能方法内已有文本输出)
+                        * 返回false则进行普通输出
+                        * */
+                        else if (!(m.abilityRelease(this))) FIGHT_FRAME.out();
                         this.weapon.durability = (int) (this.weapon.durability - m.defense * 0.5);
-//                        FIGHT_FRAME.write("==========================");
-//                        FIGHT_FRAME.title(Main.title);
-//                        FIGHT_FRAME.out();
 
                         // 这个我就不动你的了，不是因为懒
+                        //结束回合
                         GameFunctionsHelper.endRound();
+                        //窗口自清理
                         FIGHT_FRAME.selfClean(FIGHT_FRAME);
                     }
                     case 2 -> {
 
                         // 你是真正开发游戏的，我就是个临时工
+                        //怪物信息
                         m.info();
                         fightCount = fightCount - 1;
                     }
                     case 3 -> {
+                        /*
+                        * 玩家技能释放
+                        * 通过布尔值判断是否释放成功
+                        * 如释放不成功(如冷却未到)则返回上一级界面(战斗界面)并重新选择操作
+                        * 释放成功则进入下一回合
+                        * */
                         if (!abilityRelease(m, fightCount)) {
                             fightCount--;
                         }
                         GameFunctionsHelper.endRound();
                     }
 
+                    //为debug操作
                     case 666 -> {
                         m.HP = 0;
                         System.out.println("一键秒杀成功");
@@ -154,11 +205,14 @@ public class Player extends Entity implements Serializable {
                         System.out.println("自杀成功");
                     }
 
+                    //防止int数值错误
                     default -> {
                         System.out.println("请正确输入数值!");
                         fightCount = fightCount - 1;
                     }
                 }
+
+                //防止int转换错误
             } catch (NumberFormatException e) {
                 System.out.println("请正确输入数值!");
                 fightCount = fightCount - 1;
@@ -180,98 +234,6 @@ public class Player extends Entity implements Serializable {
             exp = exp + m.giveExp();
             FIGHT_FRAME.write("战斗结束,你获得了胜利!");
             FIGHT_FRAME.write("恭喜你获得了" + m.giveExp() + "点经验值");
-            levelUp(FIGHT_FRAME);
-            FIGHT_FRAME.out();
-            GameFunctionsHelper.blankOperate();
-            buffClean();
-            MAIN_FRAME.selfClean(MAIN_FRAME);
-            MAIN_FRAME.title(Main.title);
-            simpleInfo(MAIN_FRAME);
-            TextProcess.mainMenuText(this);
-            this.walkDistance++;
-            resetAbility();
-            this.HP = maxHP;
-            GameFileController.setStuck(false);
-        } else {
-            System.out.println("未知错误!");
-            GameFileController.setStuck(false);
-        }
-//        FIGHT_FRAME.title(Main.title);
-//        FIGHT_FRAME.out();
-    }
-
-    //对于boss的战斗方法(其实有细微不一样)
-    public void fight(Boss b) {
-        Scanner fightSc = new Scanner(System.in);
-        FIGHT_FRAME.selfClean(FIGHT_FRAME);
-        FIGHT_FRAME.write("你遭遇了怪物,进入战斗状态!!");
-        this.simpleInfo(FIGHT_FRAME);
-        GameFileController.setStuck(true);
-        for (int fightCount = 1; this.HP > 0 && b.HP > 0; fightCount++) {
-            fightText(fightCount, b.name, b.HP, b.maxHP, HP, maxHP, b.level, MP, maxMP);
-            try {
-                int fightFunction = Integer.parseInt(fightSc.nextLine());
-                switch (fightFunction) {
-                    case 1 -> {
-                        double playerDamage = this.strength + this.weapon.damage - b.defense;
-                        double monsterDamage = b.strength - this.defense - this.armor.armorValue;
-                        if (playerDamage <= 0) playerDamage = 1;
-                        if (monsterDamage <= 0) monsterDamage = 1;
-                        FIGHT_FRAME.write("你对怪物造成了" + playerDamage + "点伤害!");
-                        this.simpleInfo(FIGHT_FRAME);
-                        FIGHT_FRAME.title(Main.title);
-                        b.HP = b.HP - playerDamage;
-                        FIGHT_FRAME.write("怪物对你造成了" + monsterDamage + "点伤害");
-                        this.simpleInfo(FIGHT_FRAME);
-                        FIGHT_FRAME.title(Main.title);
-                        this.HP = this.HP - monsterDamage;
-                        FIGHT_FRAME.noCleanOut();
-                        if (b instanceof Dodgeable) ((Dodgeable) b).abilityRelease(this, playerDamage);
-                        else b.bossAbilityRelease(this);
-                        buffsEffect();
-                        this.weapon.durability = (int) (this.weapon.durability - b.defense * 0.5);
-
-                        // 这个我就不动你的了，不是因为懒
-                        GameFunctionsHelper.endRound();
-                        FIGHT_FRAME.selfClean(FIGHT_FRAME);
-                    }
-                    case 2 -> {
-                        b.info();
-                        fightCount = fightCount - 1;
-                    }
-                    case 3 -> {
-                        if (!abilityRelease(b, fightCount)) {
-                            fightCount--;
-                        }
-                        GameFunctionsHelper.endRound();
-                    }
-
-                    case 666 -> {
-                        b.HP = 0;
-                        System.out.println("一键秒杀成功");
-                    }
-
-                    default -> {
-                        System.out.println("请正确输入数值!");
-                        fightCount = fightCount - 1;
-                    }
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("请正确输入数值!");
-                fightCount = fightCount - 1;
-            }
-        }
-        if (this.HP <= 0) {
-            FIGHT_FRAME.write("战斗结束,你输了!");
-            this.HP = 10;
-            resetAbility();
-            buffClean();
-            GameFileController.setStuck(false);
-        } else if (b.HP <= 0) {
-            exp = exp + b.giveExp();
-            FIGHT_FRAME.write("战斗结束,你获得了胜利!");
-            FIGHT_FRAME.write("恭喜你获得了" + b.giveExp() + "点经验值");
-            FIGHT_FRAME.title(Main.title);
             levelUp(FIGHT_FRAME);
             FIGHT_FRAME.out();
             GameFunctionsHelper.blankOperate();
@@ -329,23 +291,23 @@ public class Player extends Entity implements Serializable {
                 }
             }
             case 2 -> {
-                return singleAbilityRelease(1,fightCount,m);
+                return singleAbilityRelease(1, fightCount, m);
             }
 
             case 3 -> {
-                return singleAbilityRelease(2,fightCount,m);
+                return singleAbilityRelease(2, fightCount, m);
             }
 
             case 4 -> {
-                return singleAbilityRelease(3,fightCount,m);
+                return singleAbilityRelease(3, fightCount, m);
             }
 
             case 5 -> {
-                return singleAbilityRelease(4,fightCount,m);
+                return singleAbilityRelease(4, fightCount, m);
             }
 
             case 6 -> {
-                return singleAbilityRelease(5,fightCount,m);
+                return singleAbilityRelease(5, fightCount, m);
             }
             default -> {
                 System.out.println("请正确输入数值!");
@@ -354,7 +316,7 @@ public class Player extends Entity implements Serializable {
         }
     }
 
-    private boolean singleAbilityRelease(int index,int fightCount,Monster m){
+    private boolean singleAbilityRelease(int index, int fightCount, Monster m) {
         if (abilities[index].LastRelease == -1) {
             if (abilities[index].abilityRelease(m) != 0) return false;
             abilities[index].LastRelease = fightCount;
@@ -367,84 +329,6 @@ public class Player extends Entity implements Serializable {
             System.out.println("此技能还在冷却中!");
             return false;
         }
-    }
-
-    private boolean singleAbilityRelease(int index,int fightCount,Boss boss){
-        if (abilities[index].LastRelease == -1) {
-            if (abilities[index].abilityRelease(boss) != 0) return false;
-            abilities[index].LastRelease = fightCount;
-            return true;
-        } else if (!abilities[index].isCoolingDown(fightCount)) {
-            if (abilities[index].abilityRelease(boss) != 0) return false;
-            abilities[index].LastRelease = fightCount;
-            return true;
-        } else {
-            System.out.println("此技能还在冷却中!");
-            return false;
-        }
-    }
-
-    public boolean abilityRelease(Boss b, int fightCount) {
-        Scanner releaseSc = new Scanner(System.in);
-        int i = 1;
-        for (Ability a : abilities) {
-            FIGHT_FRAME.write(i + "." + a.name);
-            i++;
-        }
-        FIGHT_FRAME.out();
-        try {
-            int release = Integer.parseInt(releaseSc.next());
-            switch (release) {
-                case 1 -> {
-                    if (abilities[0].LastRelease == -1) {
-                        return abilitySuccessfulRelease(b, fightCount);
-                    } else if (!abilities[0].isCoolingDown(fightCount)) {
-                        return abilitySuccessfulRelease(b, fightCount);
-                    } else {
-                        System.out.println("此技能还在冷却中!");
-                        return false;
-                    }
-                }
-
-                case 2 -> {
-                    return singleAbilityRelease(1,fightCount,b);
-                }
-
-                case 3 -> {
-                    return singleAbilityRelease(2,fightCount,b);
-                }
-
-                case 4 -> {
-                    return singleAbilityRelease(3,fightCount,b);
-                }
-
-                case 5 -> {
-                    return singleAbilityRelease(4,fightCount,b);
-                }
-
-                case 6 -> {
-                    return singleAbilityRelease(5,fightCount,b);
-                }
-                default -> {
-                    return false;
-                }
-            }
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    //方便使用,便于可读(大嘘)的方法
-    private boolean abilitySuccessfulRelease(Boss b, int fightCount) {
-        double damage = abilities[0].abilityRelease(b);
-        FIGHT_FRAME.out();
-        b.HP = b.HP - damage;
-        FIGHT_FRAME.write("[你发动了" + abilities[0].name + "]");
-        FIGHT_FRAME.write("[对怪物造成了" + damage + "点伤害]");
-        FIGHT_FRAME.write("怪物生命值:" + b.HP + "/" + b.maxHP);
-        FIGHT_FRAME.out();
-        abilities[0].LastRelease = fightCount;
-        return true;
     }
 
     private boolean abilitySuccessfulRelease(Monster m, int fightCount) {
@@ -462,10 +346,10 @@ public class Player extends Entity implements Serializable {
         return true;
     }
 
-    public void resetAbility(){
-        for (Ability a:abilities
-             ) {
-            if(!(a instanceof EmptyAbility)){
+    public void resetAbility() {
+        for (Ability a : abilities
+        ) {
+            if (!(a instanceof EmptyAbility)) {
                 a.LastRelease = -1;
             }
         }
@@ -739,11 +623,11 @@ public class Player extends Entity implements Serializable {
 
     //buff作用
     public void buffsEffect() {
-        for (Buff b:buffs) {
+        for (Buff b : buffs) {
             if (b != null) {
-                if(b.life > 0){
+                if (b.life > 0) {
                     b.effect(this);
-                }else{
+                } else {
                     b.finalEffect(this);
                     b = null;
                 }
@@ -751,14 +635,14 @@ public class Player extends Entity implements Serializable {
         }
     }
 
-    public void newBuff(Buff b){
+    public void newBuff(Buff b) {
         int emptyBuff = 0;
-        for (Buff b1:buffs
-             ) {
-            if(b1 != null){
+        for (Buff b1 : buffs
+        ) {
+            if (b1 != null) {
                 emptyBuff++;
-            }else {
-               buffs[emptyBuff] = b;
+            } else {
+                buffs[emptyBuff] = b;
             }
         }
     }
@@ -807,8 +691,8 @@ public class Player extends Entity implements Serializable {
 
     //清理buff用(在战斗结束时或自动存档时)
     public void buffClean() {
-        for (Buff buff:buffs) {
-            if (buff != null){
+        for (Buff buff : buffs) {
+            if (buff != null) {
                 buff.life = 0;
                 buff.finalEffect(this);
             }
@@ -817,6 +701,7 @@ public class Player extends Entity implements Serializable {
     }
 
     public boolean dodge(Monster monster) {
+        if (monster instanceof Boss) return false;
         double dodgeChance = this.agility - monster.strength / 2;
         Random dodgeRandom = new Random();
         int dodgeFlag = dodgeRandom.nextInt(0, 101);
@@ -874,4 +759,5 @@ public class Player extends Entity implements Serializable {
             }
         }
     }
+
 }

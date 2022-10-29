@@ -1,6 +1,7 @@
 package Entities.Monsters;
 
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -20,7 +21,7 @@ public class Goblin extends Monster {
         this.name = "哥布林";
     }
 
-    public void abilityRelease(Player p) {
+    public boolean abilityRelease(Player p) {
         Random rd = new Random();
         if (rd.nextInt(9) == 0 | rd.nextInt(9) == 1) {
             if (this.HP < this.maxHP - 25 * this.level * 0.5) {
@@ -32,7 +33,9 @@ public class Goblin extends Monster {
                 FIGHT_FRAME.noCleanOut();
                 this.HP = this.maxHP;
             }
+            return true;
         }
+        return false;
     }
 
     public void info() {
@@ -42,9 +45,9 @@ public class Goblin extends Monster {
         FIGHT_FRAME.write("怪物最大血量:" + this.maxHP + "怪物当前血量:" + this.HP);
         FIGHT_FRAME.write("怪物防御力:" + this.defense + "怪物攻击力:" + this.strength);
         FIGHT_FRAME.write("怪物特有技能:回复血量");
-        FIGHT_FRAME.buttonChinese("任意键继续");
+        FIGHT_FRAME.buttonChinese("任意键继续...");
         FIGHT_FRAME.out();
-        new Scanner(System.in).nextInt();
+        GameFunctionsHelper.blankOperate();
     }
 
     public double giveExp() {

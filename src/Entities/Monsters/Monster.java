@@ -13,7 +13,7 @@ public abstract class Monster extends Entity {
     public String name;
     public Buff[] buffs = new Buff[5];
 
-    public abstract void abilityRelease(Player p);
+    public abstract boolean abilityRelease(Player p);
 
     public abstract void info();
 
@@ -26,7 +26,7 @@ public abstract class Monster extends Entity {
                 if (((Buff) buff).life > 0) {
                     ((Buff) buff).effect(this);
                 } else {
-                    buff = null;
+                    ((Buff) buff).finalEffect(this);
                 }
             }
         }

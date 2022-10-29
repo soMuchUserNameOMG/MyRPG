@@ -1,6 +1,5 @@
 package PlayerAssets.Abilities;
 
-import Entities.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
@@ -32,24 +31,6 @@ public class SelfHeal extends Ability {
         OTHER_FRAME.write("你的血量:" + p.HP + "/" + p.maxHP);
         OTHER_FRAME.out();
         p.MP -= this.MpReduce;
-        return 0;
-    }
-
-    @Override
-    public double abilityRelease(Boss b) {
-        p = Main.getPlayer();
-        if (!mpJudge(p)) {
-            OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
-            OTHER_FRAME.out();
-            p.MP += this.MpReduce;
-            return 1;
-        }
-        if ((p.HP += healValue) > p.maxHP) {
-            p.HP = p.maxHP;
-        }
-        OTHER_FRAME.write("你治疗了" + healValue + "点血量");
-        OTHER_FRAME.write("你的血量:" + p.HP + "/" + p.maxHP);
-        OTHER_FRAME.out();
         return 0;
     }
 

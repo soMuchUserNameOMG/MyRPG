@@ -1,6 +1,7 @@
 package Entities.Monsters;
 
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 
 import java.util.Scanner;
 
@@ -17,10 +18,11 @@ public class Slime extends Monster {
     }
 
     @Override
-    public void abilityRelease(Player p) {
+    public boolean abilityRelease(Player p) {
         this.HP += Math.round(Math.pow(1.41421, level + 2));
         FIGHT_FRAME.write("[史莱姆缓慢聚合中]");
         FIGHT_FRAME.noCleanOut();
+        return false;
     }
 
     @Override
@@ -31,9 +33,9 @@ public class Slime extends Monster {
         FIGHT_FRAME.write("怪物最大血量:" + this.maxHP + "怪物当前血量:" + this.HP);
         FIGHT_FRAME.write("怪物防御力:" + this.defense + "怪物攻击力:" + this.strength);
         FIGHT_FRAME.write("怪物特有技能:自聚合(缓慢回复生命值)");
-        FIGHT_FRAME.buttonChinese("任意键继续");
+        FIGHT_FRAME.buttonChinese("任意键继续...");
         FIGHT_FRAME.out();
-        new Scanner(System.in).nextInt();
+        GameFunctionsHelper.blankOperate();
     }
 
     @Override

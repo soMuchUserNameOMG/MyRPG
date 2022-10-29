@@ -1,6 +1,5 @@
 package PlayerAssets.Abilities;
 
-import Entities.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
@@ -26,22 +25,6 @@ public class FireBall extends Ability {
         OTHER_FRAME.write("你释放了" + this.name);
         m.HP -= this.damage;
         OTHER_FRAME.write("对怪物造成了" + this.damage + "点伤害");
-        OTHER_FRAME.out();
-        return 0;
-    }
-
-    @Override
-    public double abilityRelease(Boss b) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
-            OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
-            OTHER_FRAME.out();
-            return 1;
-        }
-        OTHER_FRAME.write("你释放了爆裂火球!");
-        b.HP -= this.damage;
-        OTHER_FRAME.write("对怪物造成了" + this.damage + "点伤害");
-        p.MP -= this.MpReduce;
         OTHER_FRAME.out();
         return 0;
     }

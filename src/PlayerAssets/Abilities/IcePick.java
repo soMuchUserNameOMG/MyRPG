@@ -1,6 +1,5 @@
 package PlayerAssets.Abilities;
 
-import Entities.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
@@ -28,26 +27,6 @@ public class IcePick extends Ability {
         }
         OTHER_FRAME.write("你释放了" + this.name);
         m.HP -= this.damage;
-        OTHER_FRAME.write("对怪物造成了" + this.damage + "点伤害");
-        if (GameFunctionsHelper.probabilityJudge(0, 50, new Random().nextInt(0, 50))) {
-            OTHER_FRAME.write("你触发了冰冻迟缓效果,但暂未实现");
-            OTHER_FRAME.out();
-            return 0;
-        }
-        OTHER_FRAME.out();
-        return 0;
-    }
-
-    @Override
-    public double abilityRelease(Boss b) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
-            OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
-            OTHER_FRAME.out();
-            return 1;
-        }
-        OTHER_FRAME.write("你释放了冰锥术!");
-        b.HP -= this.damage;
         OTHER_FRAME.write("对怪物造成了" + this.damage + "点伤害");
         if (GameFunctionsHelper.probabilityJudge(0, 50, new Random().nextInt(0, 50))) {
             OTHER_FRAME.write("你触发了冰冻迟缓效果,但暂未实现");

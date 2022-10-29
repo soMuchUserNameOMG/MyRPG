@@ -1,14 +1,9 @@
 package PlayerAssets.Abilities;
 
 import Buffs.BerserkBuff;
-import Entities.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
-import Util.GameFileController;
-import Util.GameFunctionsHelper;
-
-import java.util.List;
 
 import static Util.FrameUtil.OTHER_FRAME;
 
@@ -33,22 +28,6 @@ public class Berserk extends Ability {
         OTHER_FRAME.write("你的力量增幅了" + this.times + "倍!");
         OTHER_FRAME.out();
         p.newBuff(new BerserkBuff(times,time));
-        p.MP -= this.MpReduce;
-        return 0;
-    }
-
-    @Override
-    public double abilityRelease(Boss b) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
-            OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
-            OTHER_FRAME.out();
-            return 1;
-        }
-        OTHER_FRAME.write("你释放了" + this.name);
-        OTHER_FRAME.write("你的力量增幅了" + this.times + "倍!");
-        OTHER_FRAME.out();
-        p.buffs[2] = new BerserkBuff(times,time);
         p.MP -= this.MpReduce;
         return 0;
     }

@@ -2,6 +2,7 @@ package Entities.Monsters;
 
 import Entities.InterFaces.Dodgeable;
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -18,18 +19,20 @@ public class Ghost extends Monster implements Dodgeable {
         this.name = "幽灵";
     }
 
-    public void abilityRelease(Player p, double damage) {
+    public boolean abilityRelease(Player p, double damage) {
         Random dodgeChanceRd = new Random();
-        int dodgeChance = dodgeChanceRd.nextInt(11);
-        if (dodgeChance > 7) return;
+        int dodgeChance = dodgeChanceRd.nextInt(10);
+        if (dodgeChance > 5) return false;
         this.HP = this.HP + damage;
         FIGHT_FRAME.write("[幽灵闪避了这次攻击]");
         FIGHT_FRAME.noCleanOut();
+        return true;
     }
 
     @Override
-    public void abilityRelease(Player p) {
+    public boolean abilityRelease(Player p) {
 
+        return false;
     }
 
     @Override
@@ -40,9 +43,9 @@ public class Ghost extends Monster implements Dodgeable {
         FIGHT_FRAME.write("怪物最大血量:" + this.maxHP + "怪物当前血量:" + this.HP);
         FIGHT_FRAME.write("怪物防御力:" + this.defense + "怪物攻击力:" + this.strength);
         FIGHT_FRAME.write("怪物特有技能:虚实之间(有一定概率攻击不到)");
-        FIGHT_FRAME.buttonChinese("任意键继续");
+        FIGHT_FRAME.buttonChinese("任意键继续...");
         FIGHT_FRAME.out();
-        new Scanner(System.in).nextInt();
+        GameFunctionsHelper.blankOperate();
     }
 
     @Override

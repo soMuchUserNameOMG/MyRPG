@@ -1,7 +1,7 @@
 package Util;
 
-import Entities.Bosses.Boss;
-import Entities.Bosses.GoblinBoss;
+import Entities.Monsters.Bosses.Boss;
+import Entities.Monsters.Bosses.GoblinBoss;
 import Entities.Monsters.*;
 import PlayerAssets.Player;
 
@@ -62,7 +62,9 @@ public class GameFunctionsHelper {
             origin = 1;
         }
         int bossLevel = rd.nextInt(origin, player.level + 2);
-        return new GoblinBoss(bossLevel);
+        return switch (spawnBoss){
+            default -> new GoblinBoss(bossLevel);
+        };
     }
 
     public static void sleep(long m) {

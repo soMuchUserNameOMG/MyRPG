@@ -2,6 +2,7 @@ package Entities.Monsters;
 
 import Buffs.Poison;
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 
 import java.util.Scanner;
 
@@ -17,10 +18,11 @@ public class Zombie extends Monster {
         this.name = "僵尸";
     }
 
-    public void abilityRelease(Player p) {
+    public boolean abilityRelease(Player p) {
         if (p.buffs[0] == null) {
             p.buffs[0] = new Poison();
         }
+        return false;
     }
 
     @Override
@@ -31,9 +33,9 @@ public class Zombie extends Monster {
         FIGHT_FRAME.write("怪物最大血量:" + this.maxHP + "怪物当前血量:" + this.HP);
         FIGHT_FRAME.write("怪物防御力:" + this.defense + "怪物攻击力:" + this.strength);
         FIGHT_FRAME.write("怪物特有技能:攻击腐化");
-        FIGHT_FRAME.buttonChinese("任意键继续");
+        FIGHT_FRAME.buttonChinese("任意键继续...");
         FIGHT_FRAME.out();
-        new Scanner(System.in).nextInt();
+        GameFunctionsHelper.blankOperate();
     }
 
     @Override
