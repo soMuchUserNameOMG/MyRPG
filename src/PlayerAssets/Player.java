@@ -407,7 +407,7 @@ public class Player extends Entity implements Serializable {
             level++;
             f.write("恭喜你升级了,你现在的等级是:" + level + "级");
             exp = 0;
-            requireExp = level * 100 + requireExp * 5 / 3;
+            requireExp = level * 100 + requireExp * 5 / 4;
             freeAttributePoints = freeAttributePoints + level * 3 - 2;
             freeSkillPoints = freeSkillPoints + level / 2;
             f.write("[你得到了" + (level * 3 - 2) + "点属性点]");
@@ -659,7 +659,7 @@ public class Player extends Entity implements Serializable {
             this.simpleInfo(f);
             f.out();
             move();
-        } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance <= 50) {
+        } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance <= 15) {
             f.write("你什么都没发现,走了一点路程");
             f.write("获得少量经验!");
             this.exp += this.level * 5;
@@ -667,25 +667,45 @@ public class Player extends Entity implements Serializable {
             this.simpleInfo(f);
             f.out();
             move();
-        } else if (GameFunctionsHelper.probabilityJudge(80, 90, exploreChance) && this.walkDistance > 50) {
+        } else if (GameFunctionsHelper.probabilityJudge(80, 90, exploreChance) && this.walkDistance > 15) {
             f.write("你遭遇了boss!\n");
             this.simpleInfo(f);
             f.noCleanOut();
             this.fight(GameFunctionsHelper.bossSpawn(this));
             move();
-        } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance > 50) {
+        } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance > 15) {
             this.fight(GameFunctionsHelper.monsterSpawn(this));
             move();
+        } else if(GameFunctionsHelper.probabilityJudge(0, 100, exploreChance)){
+            f.write("你遇到了特殊事件!");
+            f.write("一位老者将要给你的装备升级,是否同意?");
+            f.buttonChinese("同意");
+            f.buttonChinese("不同意");
+            f.out();
+            switch (GameFunctionsHelper.smartInt(new Scanner(System.in))){
+                case 1 -> {
+                    this.weapon.upgrade(f);
+                    this.armor.upgrade(f);
+                    this.simpleInfo(f);
+                    TextProcess.button(this, f);
+                    f.out();
+                }
+
+                case 2 -> {
+                    f.write("你不同意让他给你强化武器");
+                    this.simpleInfo(f);
+                    TextProcess.button(this, f);
+                    f.out();
+                }
+            }
         } else {
             f.write("你发现了奇遇!");
             f.write("(Version alpha0.1,该系统尚未实装)");
             f.write("所以给予你大量经验");
-            TextProcess.button(this, f);
-            double temp = this.requireExp;
             this.requireExp = 0;
-            for(int i = 0;i < 4;i++) this.levelUp(f);
-            this.requireExp = temp;
+            this.levelUp(f);
             this.simpleInfo(f);
+            TextProcess.button(this, f);
             f.out();
             move();
         }

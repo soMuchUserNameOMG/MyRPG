@@ -47,9 +47,8 @@ public class SelfHeal extends Ability {
         OTHER_FRAME.write(this.name + "Lv." + temp + "--->" + "Lv." + this.level);
         OTHER_FRAME.write(this.name + "治疗量:" + temp2 + "--->" + this.healValue);
         OTHER_FRAME.write("魔力消耗:" + temp3 + "--->" + this.MpReduce);
-        OTHER_FRAME.write("键入任意键继续..");
         OTHER_FRAME.out();
-        GameFunctionsHelper.blankOperate();
+        GameFunctionsHelper.sleep(1500);
     }
 
 }

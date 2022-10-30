@@ -35,10 +35,9 @@ public class MutiAttack extends Ability {
             OTHER_FRAME.write(this.name + "的连击次数上升!");
             OTHER_FRAME.write(this.name + "连击次数:" + temp3 + "--->" + this.frequency);
         }
-        OTHER_FRAME.write(this.name + ": " + "Lv." + temp + "--->" + "Lv." + this.level);
+        OTHER_FRAME.write("等级:" + temp + "--->" + this.level);
         OTHER_FRAME.write(this.name + "伤害" + ":" + temp2 + "--->" + this.damage);
-        OTHER_FRAME.write("键入任意键继续...");
         OTHER_FRAME.out();
-        GameFunctionsHelper.blankOperate();
+        GameFunctionsHelper.sleep(1500);
     }
 }

@@ -5,6 +5,7 @@ import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 
 import static Util.FrameUtil.OTHER_FRAME;
 
@@ -34,6 +35,9 @@ public class PoisonMist extends Ability {
     public void abilityLevelUp() {
         OTHER_FRAME.write("你选择升级了" + this.name);
         OTHER_FRAME.write(this.name + "的等级上升一级");
+        int temp = this.level;
+        this.level++;
+        OTHER_FRAME.write("等级:"+temp+"--->"+level);
         double temp1 = this.damage;
         this.damage += 4;
         OTHER_FRAME.write("伤害:" + temp1 + "--->" + this.damage);
@@ -45,5 +49,7 @@ public class PoisonMist extends Ability {
             OTHER_FRAME.write("毒雾持续时间:" + temp2 + "--->" + this.time);
             OTHER_FRAME.write("消耗魔力值:" + temp3 + "--->" + this.MpReduce);
         }
+        OTHER_FRAME.out();
+        GameFunctionsHelper.sleep(1500);
     }
 }

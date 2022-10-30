@@ -4,6 +4,7 @@ import Buffs.BerserkBuff;
 import Entities.Monsters.Monster;
 import Main.Main;
 import PlayerAssets.Player;
+import Util.GameFunctionsHelper;
 
 import static Util.FrameUtil.OTHER_FRAME;
 
@@ -36,9 +37,12 @@ public class Berserk extends Ability {
     public void abilityLevelUp() {
         OTHER_FRAME.write("你选择升级了" + this.name);
         OTHER_FRAME.write(this.name + "的等级上升一级");
-        double temp = times;
+        int temp = this.level;
+        this.level++;
+        OTHER_FRAME.write("等级:"+temp+"--->"+level);
+        double temp1 = times;
         times += 0.5;
-        OTHER_FRAME.write("力量提升倍数:" + temp + "--->" + times);
+        OTHER_FRAME.write("力量提升倍数:" + temp1 + "--->" + times);
         if (this.level % 4 == 0) {
             int temp2 = time;
             time++;
@@ -46,7 +50,8 @@ public class Berserk extends Ability {
             double temp3 = MpReduce;
             MpReduce += 15;
             OTHER_FRAME.write("消耗魔力值:" + temp3 + "--->" + MpReduce);
-            OTHER_FRAME.out();
         }
+        OTHER_FRAME.out();
+        GameFunctionsHelper.sleep(1500);
     }
 }
