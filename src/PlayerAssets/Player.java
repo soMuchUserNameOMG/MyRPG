@@ -676,7 +676,7 @@ public class Player extends Entity implements Serializable {
         } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance > 15) {
             this.fight(GameFunctionsHelper.monsterSpawn(this));
             move();
-        } else if(GameFunctionsHelper.probabilityJudge(0, 100, exploreChance)){
+        } else if(GameFunctionsHelper.probabilityJudge(90, 96, exploreChance)){
             f.write("你遇到了特殊事件!");
             f.write("一位老者将要给你的装备升级,是否同意?");
             f.buttonChinese("同意");
