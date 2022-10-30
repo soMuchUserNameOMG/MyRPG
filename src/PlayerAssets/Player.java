@@ -33,13 +33,13 @@ public class Player extends Entity implements Serializable {
     public double strength;
     public double exp;
     public int walkDistance;
+    public int walkTime;
     public double requireExp;
     public int freeAttributePoints;
     public int freeSkillPoints;
     public Ability[] abilities = new Ability[6];
     public Buff[] buffs = new Buff[5];
     public boolean actChance;
-    public String name;
     public Weapon weapon;
     public Armor armor;
 
@@ -86,7 +86,7 @@ public class Player extends Entity implements Serializable {
     }
 
 
-    //对于普通怪物的战斗方法(内部细节注释请看下面)
+    //对于怪物的战斗方法(内部细节注释请看下面)
     public void fight(Monster m) {
         Scanner fightSc = new Scanner(System.in);
         FIGHT_FRAME.selfClean(FIGHT_FRAME);
@@ -167,8 +167,6 @@ public class Player extends Entity implements Serializable {
                         * */
                         else if (!(m.abilityRelease(this))) FIGHT_FRAME.out();
                         this.weapon.durability = (int) (this.weapon.durability - m.defense * 0.5);
-
-                        // 这个我就不动你的了，不是因为懒
                         //结束回合
                         GameFunctionsHelper.endRound();
                         //窗口自清理
@@ -176,7 +174,6 @@ public class Player extends Entity implements Serializable {
                     }
                     case 2 -> {
 
-                        // 你是真正开发游戏的，我就是个临时工
                         //怪物信息
                         m.info();
                         fightCount = fightCount - 1;
@@ -242,7 +239,6 @@ public class Player extends Entity implements Serializable {
             MAIN_FRAME.title(Main.title);
             simpleInfo(MAIN_FRAME);
             TextProcess.mainMenuText(this);
-            this.walkDistance++;
             resetAbility();
             this.HP = maxHP;
             GameFileController.setStuck(false);
@@ -267,8 +263,6 @@ public class Player extends Entity implements Serializable {
         FIGHT_FRAME.out();
     }
 
-    //下面这两个方法就是两坨屎,我再也不会去动他们了
-    // 听你这么说，那我也别干了。
     public boolean abilityRelease(Monster m, int fightCount) {
         Scanner releaseSc = new Scanner(System.in);
         FIGHT_FRAME.write("请选择你要释放哪一个技能");
@@ -656,6 +650,7 @@ public class Player extends Entity implements Serializable {
         int exploreChance = exploreRD.nextInt(101);
         if (GameFunctionsHelper.probabilityJudge(0, 40, exploreChance)) {
             this.fight(GameFunctionsHelper.monsterSpawn(this));
+            move();
         } else if (GameFunctionsHelper.probabilityJudge(40, 60, exploreChance)) {
             f.write("你什么都没发现,走了一点路程");
             f.write("获得少量经验!");
@@ -663,7 +658,7 @@ public class Player extends Entity implements Serializable {
             TextProcess.button(this, f);
             this.simpleInfo(f);
             f.out();
-            this.walkDistance += 2;
+            move();
         } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance <= 50) {
             f.write("你什么都没发现,走了一点路程");
             f.write("获得少量经验!");
@@ -671,22 +666,35 @@ public class Player extends Entity implements Serializable {
             TextProcess.button(this, f);
             this.simpleInfo(f);
             f.out();
-            this.walkDistance += 2;
-        } else if (GameFunctionsHelper.probabilityJudge(80, 90, exploreChance) && this.walkDistance >= 50) {
+            move();
+        } else if (GameFunctionsHelper.probabilityJudge(80, 90, exploreChance) && this.walkDistance > 50) {
             f.write("你遭遇了boss!\n");
             this.simpleInfo(f);
             f.noCleanOut();
             this.fight(GameFunctionsHelper.bossSpawn(this));
-        } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance >= 50) {
+            move();
+        } else if (GameFunctionsHelper.probabilityJudge(60, 80, exploreChance) && this.walkDistance > 50) {
             this.fight(GameFunctionsHelper.monsterSpawn(this));
+            move();
         } else {
             f.write("你发现了奇遇!");
             f.write("(Version alpha0.1,该系统尚未实装)");
+            f.write("所以给予你大量经验");
             TextProcess.button(this, f);
+            double temp = this.requireExp;
+            this.requireExp = 0;
+            for(int i = 0;i < 4;i++) this.levelUp(f);
+            this.requireExp = temp;
             this.simpleInfo(f);
             f.out();
+            move();
         }
 
+    }
+
+    public void move(){
+        this.walkTime++;
+        this.walkDistance = walkTime / 3;
     }
 
     //清理buff用(在战斗结束时或自动存档时)
@@ -718,12 +726,7 @@ public class Player extends Entity implements Serializable {
         f.write("已找到可讨伐的怪物!");
         f.noCleanOut();
         GameFunctionsHelper.sleep(500);
-        int mLevel = this.walkDistance / 2 - (this.level / 5);
-        if (mLevel < 1) {
-            mLevel = 1;
-        }
-        this.fight(GameFunctionsHelper.monsterSpawn(mLevel));
-        this.walkDistance--;
+        this.fight(GameFunctionsHelper.monsterSpawn(this));
     }
 
     public void getNewAbility() {

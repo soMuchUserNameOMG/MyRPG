@@ -18,8 +18,8 @@ public class Berserk extends Ability {
 
     @Override
     public double abilityRelease(Monster m) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
+        p = Main.getPlayer();
+        if (!mpJudge()) {
             OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
             OTHER_FRAME.out();
             return 1;
@@ -46,6 +46,7 @@ public class Berserk extends Ability {
             double temp3 = MpReduce;
             MpReduce += 15;
             OTHER_FRAME.write("消耗魔力值:" + temp3 + "--->" + MpReduce);
+            OTHER_FRAME.out();
         }
     }
 }

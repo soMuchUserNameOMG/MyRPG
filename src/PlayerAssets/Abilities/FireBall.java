@@ -16,8 +16,7 @@ public class FireBall extends Ability {
 
     @Override
     public double abilityRelease(Monster m) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
+        if (!mpJudge()) {
             OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
             OTHER_FRAME.out();
             return 1;

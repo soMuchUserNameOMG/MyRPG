@@ -18,8 +18,8 @@ public class SelfHeal extends Ability {
 
     @Override
     public double abilityRelease(Monster m) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
+        p = Main.getPlayer();
+        if (!mpJudge()) {
             OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
             OTHER_FRAME.out();
             return 1;
@@ -30,7 +30,6 @@ public class SelfHeal extends Ability {
         OTHER_FRAME.write("你治疗了" + healValue + "点血量");
         OTHER_FRAME.write("你的血量:" + p.HP + "/" + p.maxHP);
         OTHER_FRAME.out();
-        p.MP -= this.MpReduce;
         return 0;
     }
 

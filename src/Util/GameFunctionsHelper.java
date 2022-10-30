@@ -28,39 +28,19 @@ public class GameFunctionsHelper {
     public static Monster monsterSpawn(Player player) {
         Random rd = new Random();
         int spawnMonster = rd.nextInt(6);
-        int origin = player.level;
-        if (origin - 1 <= 0) {
-            origin = 1;
-        }
-        int monsterLevel = rd.nextInt(origin, player.level + 2);
         return switch (spawnMonster) {
-            case 2 -> new Zombie(monsterLevel);
-            case 3 -> new DemonizedBeast(monsterLevel);
-            case 4 -> new Ghost(monsterLevel);
-            case 5 -> new Slime(monsterLevel);
-            default -> new Goblin(monsterLevel);
-        };
-    }
-
-    public static Monster monsterSpawn(int mLevel) {
-        Random rd = new Random();
-        int spawnMonster = rd.nextInt(6);
-        return switch (spawnMonster) {
-            case 2 -> new Zombie(mLevel);
-            case 3 -> new DemonizedBeast(mLevel);
-            case 4 -> new Ghost(mLevel);
-            case 5 -> new Slime(mLevel);
-            default -> new Goblin(mLevel);
+            case 2 -> new Zombie(dangerFactorCalculate(player));
+            case 3 -> new DemonizedBeast(dangerFactorCalculate(player));
+            case 4 -> new Ghost(dangerFactorCalculate(player));
+            case 5 -> new Slime(dangerFactorCalculate(player));
+            default -> new Goblin(dangerFactorCalculate(player));
         };
     }
 
     public static Boss bossSpawn(Player player) {
         Random rd = new Random();
         int spawnBoss = rd.nextInt(6);
-        int origin = player.level;
-        if (origin - 1 <= 0) {
-            origin = 1;
-        }
+        int origin = dangerFactorCalculate(player);
         int bossLevel = rd.nextInt(origin, player.level + 2);
         return switch (spawnBoss){
             default -> new GoblinBoss(bossLevel);
@@ -94,6 +74,24 @@ public class GameFunctionsHelper {
             bf.readLine();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //怪物危险系数计算
+    public static int dangerFactorCalculate(Player player){
+        Random rd = new Random();
+        if(player.walkDistance <= 5){
+            return 1;
+        } else if(player.walkDistance <= 10){
+            return rd.nextInt(1,4);
+        } else if (player.walkDistance <= 20) {
+            return rd.nextInt(2,6);
+        } else if(player.walkDistance <= 35){
+            return rd.nextInt(4,11);
+        } else if (player.walkDistance <= 50) {
+            return rd.nextInt(6,15);
+        } else {
+            return  rd.nextInt(8,100);
         }
     }
 }

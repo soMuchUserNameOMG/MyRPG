@@ -10,4 +10,6 @@ public class Entity implements Serializable {
     public double HP;
     public double maxHP;
     public int level;
+
+    public String name;
 }

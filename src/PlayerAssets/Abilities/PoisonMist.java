@@ -19,8 +19,7 @@ public class PoisonMist extends Ability {
 
     @Override
     public double abilityRelease(Monster m) {
-        Player p = Main.getPlayer();
-        if (!mpJudge(p)) {
+        if (!mpJudge()) {
             OTHER_FRAME.write("你的魔力值不足以释放这个技能!");
             OTHER_FRAME.out();
             return 1;
@@ -28,7 +27,6 @@ public class PoisonMist extends Ability {
         OTHER_FRAME.write("你选择释放了" + this.name);
         if(!(m instanceof Boss)) m.newBuff(new Poison(damage, time));
         OTHER_FRAME.write("对怪物造成了中毒效果!");
-        p.MP -= MpReduce;
         return 0;
     }
 

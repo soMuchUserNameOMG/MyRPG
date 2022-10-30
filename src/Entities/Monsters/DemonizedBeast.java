@@ -26,12 +26,12 @@ public class DemonizedBeast extends Monster {
         int chance = chanceRd.nextInt(2);
         if (chance == 0) return false;
         FIGHT_FRAME.write("[魔化野兽对你进行了连击]");
-        double damage = this.strength * 2 - p.defense;
+        double damage = this.strength * 2 - p.defense -p.armor.armorValue;
         if (damage <= 0) damage = 1;
         p.HP = p.HP - damage;
         FIGHT_FRAME.write("[对你造成了" + damage + "点伤害]");
         FIGHT_FRAME.out();
-        return false;
+        return true;
     }
 
     @Override

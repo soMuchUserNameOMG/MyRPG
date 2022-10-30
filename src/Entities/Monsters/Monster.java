@@ -10,7 +10,6 @@ import java.util.List;
 public abstract class Monster extends Entity {
     public double strength;
     public double defense;
-    public String name;
     public Buff[] buffs = new Buff[5];
 
     public abstract boolean abilityRelease(Player p);

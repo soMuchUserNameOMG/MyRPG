@@ -18,6 +18,8 @@ public abstract class Ability implements Serializable {
     public int special;
     public int LastRelease = -1;
 
+    public Player p;
+
     public Ability(String name, int special, int level, int coolDown) {
         this.name = name;
         this.special = special;
@@ -39,7 +41,7 @@ public abstract class Ability implements Serializable {
 
     public abstract void abilityLevelUp();
 
-    public boolean mpJudge(Player p) {
+    public boolean mpJudge() {
         return !(p.MP - this.MpReduce < 0);
     }
 }

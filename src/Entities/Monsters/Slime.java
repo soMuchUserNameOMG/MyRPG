@@ -22,7 +22,7 @@ public class Slime extends Monster {
         this.HP += Math.round(Math.pow(1.41421, level + 2));
         FIGHT_FRAME.write("[史莱姆缓慢聚合中]");
         FIGHT_FRAME.noCleanOut();
-        return false;
+        return true;
     }
 
     @Override

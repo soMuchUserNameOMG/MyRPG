@@ -17,9 +17,7 @@ public class MutiAttack extends Ability {
 
     @Override
     public double abilityRelease(Monster m) {
-        double damage = this.damage * this.frequency - m.defense;
-        m.HP = m.HP - damage;
-        return damage;
+        return this.damage * this.frequency - m.defense;
     }
 
     @Override

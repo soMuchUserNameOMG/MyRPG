@@ -1,5 +1,6 @@
 package Entities.Monsters;
 
+import Buffs.Buff;
 import Buffs.Poison;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
@@ -19,8 +20,15 @@ public class Zombie extends Monster {
     }
 
     public boolean abilityRelease(Player p) {
-        if (p.buffs[0] == null) {
-            p.buffs[0] = new Poison();
+        for(int j = 0;j < p.buffs.length;j++){
+            if(p.buffs[j] instanceof Poison){
+              return false;
+            } else if(p.buffs[j] == null){
+                p.buffs[j] = new Poison();
+                FIGHT_FRAME.write("[僵尸的攻击对你造成了腐化效果(下个回合生效)!]");
+                FIGHT_FRAME.out();
+                return true;
+            }
         }
         return false;
     }
