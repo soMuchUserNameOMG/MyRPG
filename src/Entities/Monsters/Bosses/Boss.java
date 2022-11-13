@@ -1,6 +1,7 @@
 package Entities.Monsters.Bosses;
 
 import Entities.Monsters.Monster;
+import Item.Loot;
 import PlayerAssets.Player;
 
 import java.util.Random;
@@ -40,5 +41,5 @@ public abstract class Boss extends Monster {
 
     public abstract void info();
 
-    public abstract double giveExp();
+    public abstract Loot loot();
 }

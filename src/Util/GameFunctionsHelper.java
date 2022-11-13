@@ -94,4 +94,8 @@ public class GameFunctionsHelper {
             return  rd.nextInt(8,100);
         }
     }
+
+    public static int goldCalculate(Monster monster){
+        return new Random().nextInt((int) (monster.level+ monster.strength+ monster.defense),(int) (monster.level+ monster.strength+ monster.defense + 20));
+    }
 }

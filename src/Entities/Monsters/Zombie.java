@@ -1,11 +1,9 @@
 package Entities.Monsters;
 
-import Buffs.Buff;
 import Buffs.Poison;
+import Item.Loot;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
-
-import java.util.Scanner;
 
 import static Util.FrameUtil.FIGHT_FRAME;
 
@@ -47,7 +45,7 @@ public class Zombie extends Monster {
     }
 
     @Override
-    public double giveExp() {
-        return Double.parseDouble(String.format("%.1f", level * 5 + strength * 15 + defense * 20 / 3));
+    public Loot loot() {
+        return new Loot(Double.parseDouble(String.format("%.1f", level * 5 + strength * 15 + defense * 20 / 3)),GameFunctionsHelper.goldCalculate(this));
     }
 }

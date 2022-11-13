@@ -5,6 +5,7 @@ import Buffs.Poison;
 import Entities.Monsters.Bosses.GoblinBoss;
 import Entities.Monsters.Goblin;
 import Entities.Monsters.Monster;
+import Entities.NPCs.Armorer;
 import PlayerAssets.Abilities.Ability;
 import PlayerAssets.Player;
 
@@ -12,7 +13,7 @@ public class Debug {
     static Player p = new Player("DebugPlayer",10);
     public static void main(String[] args) throws InterruptedException {
         init();
-        p.fight(new Goblin(10));
+        new Armorer().upgrade(p,p.equipments);
     }
 
     public static void init(){

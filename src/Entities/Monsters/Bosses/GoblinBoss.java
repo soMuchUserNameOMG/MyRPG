@@ -1,6 +1,7 @@
 package Entities.Monsters.Bosses;
 
 import Buffs.Shocking;
+import Item.Loot;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
@@ -70,7 +71,7 @@ public class GoblinBoss extends Boss {
     }
 
     @Override
-    public double giveExp() {
-        return (int) (this.level * 15 + this.strength * 15 + this.defense * 10);
+    public Loot loot() {
+        return new Loot (this.level * 15 + this.strength * 15 + this.defense * 10 + this.maxHP,GameFunctionsHelper.goldCalculate(this));
     }
 }

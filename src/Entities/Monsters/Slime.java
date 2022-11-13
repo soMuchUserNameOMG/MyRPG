@@ -1,9 +1,8 @@
 package Entities.Monsters;
 
+import Item.Loot;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
-
-import java.util.Scanner;
 
 import static Util.FrameUtil.FIGHT_FRAME;
 
@@ -39,7 +38,7 @@ public class Slime extends Monster {
     }
 
     @Override
-    public double giveExp() {
-        return level * 15 + strength * 10 + defense * 10;
+    public Loot loot() {
+        return new Loot(level * 15 + strength * 10 + defense * 10, GameFunctionsHelper.goldCalculate(this));
     }
 }

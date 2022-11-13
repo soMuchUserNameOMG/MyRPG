@@ -2,6 +2,7 @@ package Entities.Monsters;
 
 import Buffs.Buff;
 import Entities.Entity;
+import Item.Loot;
 import PlayerAssets.Player;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public abstract class Monster extends Entity {
 
     public abstract void info();
 
-    public abstract double giveExp();
+    public abstract Loot loot();
 
     public void buffEffect() {
         Object[] buffs1 = this.getBuff();

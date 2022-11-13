@@ -1,11 +1,11 @@
 package Entities.Monsters;
 
 import Entities.InterFaces.Dodgeable;
+import Item.Loot;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
 import java.util.Random;
-import java.util.Scanner;
 
 import static Util.FrameUtil.FIGHT_FRAME;
 
@@ -49,7 +49,7 @@ public class Ghost extends Monster implements Dodgeable {
     }
 
     @Override
-    public double giveExp() {
-        return Double.parseDouble(String.format("%.1f", level * 25 + strength * 22 / 3));
+    public Loot loot() {
+        return new Loot(Double.parseDouble(String.format("%.1f", level * 25 + strength * 22 / 3)), GameFunctionsHelper.goldCalculate(this));
     }
 }

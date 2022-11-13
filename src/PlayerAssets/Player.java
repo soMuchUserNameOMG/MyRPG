@@ -5,9 +5,12 @@ import Entities.Entity;
 import Entities.InterFaces.Dodgeable;
 import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Monster;
+import Entities.NPCs.Armorer;
+import Item.Loot;
 import Main.Main;
 import PlayerAssets.Abilities.*;
 import PlayerAssets.Equipment.Armor;
+import PlayerAssets.Equipment.Equipment;
 import PlayerAssets.Equipment.Weapon;
 import Util.GameFileController;
 import Util.GameFunctionsHelper;
@@ -42,6 +45,8 @@ public class Player extends Entity implements Serializable {
     public boolean actChance;
     public Weapon weapon;
     public Armor armor;
+    public Equipment[] equipments;
+    public int gold;
 
     //level变量仅为调试作用,实际中默认为1
     public Player(String name, int level) {
@@ -66,18 +71,8 @@ public class Player extends Entity implements Serializable {
         this.weapon = new Weapon("训练战士用的木剑", 3, 2147483647);
         this.actChance = true;
         this.armor = new Armor(3, "新手木甲", 2147483647);
-    }
-
-    //debug构造方法
-    public Player(double maxHP, double maxMP, double defense, double strength, String name, Weapon wp) {
-        this.maxHP = maxHP;
-        this.HP = maxMP;
-        this.maxMP = maxMP;
-        this.MP = maxMP;
-        this.defense = defense;
-        this.strength = strength;
-        this.name = name;
-        this.weapon = wp;
+        this.equipments = new Equipment[]{weapon,armor};
+        this.gold = 100;
     }
 
     //无参构造
@@ -101,6 +96,7 @@ public class Player extends Entity implements Serializable {
         for (int fightCount = 1; this.HP > 0 && m.HP > 0; fightCount++) {
             //回合开始前buff作用
             buffsEffect();
+            m.buffEffect();
             /*
              * 如玩家受到震撼效果,则会进入此分支
              * 在此分支中,玩家无法行动
@@ -228,11 +224,7 @@ public class Player extends Entity implements Serializable {
             resetAbility();
             GameFileController.setStuck(false);
         } else if (m.HP <= 0) {
-            exp = exp + m.giveExp();
-            FIGHT_FRAME.write("战斗结束,你获得了胜利!");
-            FIGHT_FRAME.write("恭喜你获得了" + m.giveExp() + "点经验值");
-            levelUp(FIGHT_FRAME);
-            FIGHT_FRAME.out();
+            reward(m.loot());
             GameFunctionsHelper.blankOperate();
             buffClean();
             MAIN_FRAME.selfClean(MAIN_FRAME);
@@ -353,17 +345,17 @@ public class Player extends Entity implements Serializable {
     public void simpleInfo(Frame f) {
         Math.round(1.0);
         f.clearAttribute();
-        f.attribute("等级    " + level);
-        f.attribute("经验    " + Math.round(requireExp) + "/" + Math.round(exp));
-        f.attribute("属性点  " + Math.round(freeAttributePoints));
-        f.attribute("生命值  " + Math.round(HP) + "/" + Math.round(maxHP));
-        f.attribute("魔力值  " + Math.round(MP) + "/" + Math.round(maxMP));
-        f.attribute("攻击力  " + Math.round(strength));
-        f.attribute("防御力  " + Math.round(defense));
-        f.attribute("敏捷    " + Math.round(agility));
-        f.attribute("距离    " + "1000/" + walkDistance);
-        f.attribute("武器    " + weapon.name + "\t伤害:" + Math.round(weapon.damage));
-        f.attribute("盔甲    " + armor.name + "\t盔甲值:" + armor.armorValue);
+        f.attribute("等级:" + level);
+        f.attribute("经验:" + Math.round(requireExp) + "/" + Math.round(exp));
+        f.attribute("属性点:" + Math.round(freeAttributePoints));
+        f.attribute("生命值:" + Math.round(HP) + "/" + Math.round(maxHP));
+        f.attribute("魔力值:" + Math.round(MP) + "/" + Math.round(maxMP));
+        f.attribute("攻击力:" + Math.round(strength));
+        f.attribute("防御力:" + Math.round(defense));
+        f.attribute("敏捷:" + Math.round(agility));
+        f.attribute("金币数量:"+ this.gold);
+        f.attribute("武器:" + weapon.name + "\t伤害:" + Math.round(weapon.damage));
+        f.attribute("盔甲:" + armor.name + "\t盔甲值:" + armor.armorValue);
         f.attribute("输入6以查看详细信息....");
     }
 
@@ -381,6 +373,7 @@ public class Player extends Entity implements Serializable {
         f.write("攻击力  " + Math.round(strength));
         f.write("防御力  " + Math.round(defense));
         f.write("敏捷    " + Math.round(agility));
+        f.attribute("金币数量 "+ this.gold);
         f.write("距离    " + "1000/" + walkDistance);
         f.write("键入任意键进入下一页");
         f.out();
@@ -678,26 +671,9 @@ public class Player extends Entity implements Serializable {
             move();
         } else if(GameFunctionsHelper.probabilityJudge(90, 96, exploreChance)){
             f.write("你遇到了特殊事件!");
-            f.write("一位老者将要给你的装备升级,是否同意?");
-            f.buttonChinese("同意");
-            f.buttonChinese("不同意");
+            f.write("一位铁匠将要给你升级装备!");
             f.out();
-            switch (GameFunctionsHelper.smartInt(new Scanner(System.in))){
-                case 1 -> {
-                    this.weapon.upgrade(f);
-                    this.armor.upgrade(f);
-                    this.simpleInfo(f);
-                    TextProcess.button(this, f);
-                    f.out();
-                }
-
-                case 2 -> {
-                    f.write("你不同意让他给你强化武器");
-                    this.simpleInfo(f);
-                    TextProcess.button(this, f);
-                    f.out();
-                }
-            }
+            new Armorer().upgrade(this,this.equipments);
         } else {
             f.write("你发现了奇遇!");
             f.write("(Version alpha0.1,该系统尚未实装)");
@@ -781,6 +757,18 @@ public class Player extends Entity implements Serializable {
                 this.abilities[unactivatedAbility] = new Berserk("狂暴", 1, 1, 4);
             }
         }
+    }
+
+    public void reward(Loot loot){
+        FIGHT_FRAME.write("战斗结束,你获得了胜利!");
+        this.exp += loot.exp;
+        FIGHT_FRAME.write("恭喜你获得了"+loot.exp+"点经验值");
+        this.gold += loot.gold;
+        FIGHT_FRAME.write(loot.gold+"点金币");
+        FIGHT_FRAME.out();
+        GameFunctionsHelper.sleep(2500);
+        levelUp(FIGHT_FRAME);
+        FIGHT_FRAME.out();
     }
 
 }

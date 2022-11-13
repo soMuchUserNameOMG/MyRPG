@@ -1,10 +1,10 @@
 package Entities.Monsters;
 
+import Item.Loot;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
 import java.util.Random;
-import java.util.Scanner;
 
 import static Util.FrameUtil.FIGHT_FRAME;
 
@@ -50,7 +50,7 @@ public class Goblin extends Monster {
         GameFunctionsHelper.blankOperate();
     }
 
-    public double giveExp() {
-        return level * 5 + strength * 10 + defense * 5;
+    public Loot loot() {
+        return new Loot(level * 5 + strength * 10 + defense * 5, GameFunctionsHelper.goldCalculate(this));
     }
 }

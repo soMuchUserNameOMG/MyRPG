@@ -1,11 +1,11 @@
 package Entities.Monsters;
 
+import Item.Loot;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 import frame.Frame;
 
 import java.util.Random;
-import java.util.Scanner;
 
 import static Util.FrameUtil.FIGHT_FRAME;
 
@@ -49,8 +49,8 @@ public class DemonizedBeast extends Monster {
     }
 
     @Override
-    public double giveExp() {
-        return Double.parseDouble(String.format("%.1f", level * 6 + strength * 8 + defense * 10 / 3));
+    public Loot loot() {
+        return new Loot(Double.parseDouble(String.format("%.1f", level * 6 + strength * 8 + defense * 10 / 3)),GameFunctionsHelper.goldCalculate(this));
     }
 
 }
