@@ -24,13 +24,20 @@ public class Armorer {
             OTHER_FRAME.out();
             switch (new Scanner(System.in).nextLine().toUpperCase(Locale.ROOT)) {
                 case "1" -> {
-                    OTHER_FRAME.write("工匠开始升级装备!");
-                    OTHER_FRAME.out();
-                    for (Equipment eq:equipments
-                         ) {
-                        eq.upgrade(OTHER_FRAME);
+                    if(player.gold - (total+10) >= 0) {
+                        OTHER_FRAME.write("工匠开始升级装备!");
+                        OTHER_FRAME.out();
+                        for (Equipment eq : equipments
+                        ) {
+                            eq.upgrade(OTHER_FRAME);
+                        }
+                        flag = false;
+                    }else {
+                        OTHER_FRAME.write("金币不足!");
+                        OTHER_FRAME.out();
+                        GameFunctionsHelper.sleep(2000);
+                        flag = false;
                     }
-                    flag = false;
                 }
 
                 case "2" -> {

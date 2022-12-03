@@ -673,7 +673,11 @@ public class Player extends Entity implements Serializable {
             f.write("你遇到了特殊事件!");
             f.write("一位铁匠将要给你升级装备!");
             f.out();
+            GameFunctionsHelper.sleep(1500);
             new Armorer().upgrade(this,this.equipments);
+            TextProcess.button(this, f);
+            this.simpleInfo(f);
+            f.out();
         } else {
             f.write("你发现了奇遇!");
             f.write("(Version alpha0.1,该系统尚未实装)");
