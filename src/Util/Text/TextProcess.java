@@ -48,6 +48,7 @@ public class TextProcess {
         MAIN_FRAME.write("现在你走了" + player.walkDistance + "的路程,距离到达魔王城还有" + (1000 - player.walkDistance) + "的路程");
         MAIN_FRAME.write();
         MAIN_FRAME.write("请选择你现在要做什么");
+        player.simpleInfo(MAIN_FRAME);
         TextProcess.button(player, MAIN_FRAME);
         MAIN_FRAME.out();
     }

@@ -9,6 +9,7 @@ import Entities.NPCs.Armorer;
 import Item.Loot;
 import Main.Main;
 import PlayerAssets.Abilities.*;
+import PlayerAssets.Abilities.Default.*;
 import PlayerAssets.Equipment.Armor;
 import PlayerAssets.Equipment.Equipment;
 import PlayerAssets.Equipment.Weapon;
@@ -388,7 +389,15 @@ public class Player extends Entity implements Serializable {
         f.write("\t盔甲等级:" + this.armor.level);
         f.write("\t盔甲防御值:" + this.armor.armorValue);
         f.write("\t盔甲剩余耐久:" + this.armor.durability + "/" + this.armor.maxDurability);
-        f.write("输入任意键退出");
+        f.write("输入任意键进入下一页");
+        f.out();
+        GameFunctionsHelper.blankOperate();
+        try {
+            this.abilitiesInfo();
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException){
+            //Do nothing,just let it go.
+        }
+        f.write("[信息已观看完毕,输入任意键退出]");
         f.out();
         GameFunctionsHelper.blankOperate();
         TextProcess.mainMenuText(this);
@@ -759,6 +768,36 @@ public class Player extends Entity implements Serializable {
 
             case 5 -> {
                 this.abilities[unactivatedAbility] = new Berserk("狂暴", 1, 1, 4);
+            }
+        }
+    }
+
+    //获取技能信息
+    public void abilitiesInfo() throws ArrayIndexOutOfBoundsException{
+        int i = 0;
+        for (int k = 0;i < abilities.length;i++){
+            abilities[i].info();
+            k++;
+            //以页为单位输出,每页放置两个技能介绍
+            if(k == 2){
+                //防止空技能输出
+                if(abilities[i] instanceof EmptyAbility) return;
+                OTHER_FRAME.out();
+                k = 0;
+                //翻页停顿
+                GameFunctionsHelper.sleep(3500);
+            }
+            //最后一页处理
+            if(abilities[i+1] instanceof EmptyAbility){
+                //检测是否为空技能,是退出
+                if(abilities[i] instanceof EmptyAbility || k == 0) {
+                    GameFunctionsHelper.sleep(3500);
+                    return;
+                }
+                //输出最后一个技能的介绍
+                OTHER_FRAME.out();
+                GameFunctionsHelper.sleep(3500);
+                return;
             }
         }
     }

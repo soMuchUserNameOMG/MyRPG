@@ -27,6 +27,7 @@ public abstract class Monster extends Entity {
                     ((Buff) buff).effect(this);
                 } else {
                     ((Buff) buff).finalEffect(this);
+                    buff = null;
                 }
             }
         }
@@ -39,6 +40,7 @@ public abstract class Monster extends Entity {
                 isNullBuff++;
             }
         }
+        if(isNullBuff >= buffs.length) buffs[0] = buff;
         buffs[isNullBuff] = buff;
     }
 

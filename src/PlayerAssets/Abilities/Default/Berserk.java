@@ -1,8 +1,9 @@
-package PlayerAssets.Abilities;
+package PlayerAssets.Abilities.Default;
 
 import Buffs.BerserkBuff;
 import Entities.Monsters.Monster;
 import Main.Main;
+import PlayerAssets.Abilities.Ability;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
@@ -14,6 +15,7 @@ public class Berserk extends Ability {
 
     public Berserk(String name, int special, int level, int coolDown) {
         super(name, special, level, coolDown);
+        this.setDesc("释放狂暴技能后能够使得你的力量增强至原来的"+this.times+"倍,此倍数会随着升级而升高,而MP消耗值也会随之升高");
         this.MpReduce = 35;
     }
 

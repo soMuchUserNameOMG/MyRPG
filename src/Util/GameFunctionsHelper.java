@@ -3,12 +3,17 @@ package Util;
 import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Bosses.GoblinBoss;
 import Entities.Monsters.*;
+import PlayerAssets.Abilities.Ability;
+import PlayerAssets.Abilities.Default.Berserk;
+import PlayerAssets.Abilities.Default.EmptyAbility;
 import PlayerAssets.Player;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.Scanner;
+
+import static Util.FrameUtil.OTHER_FRAME;
 
 public class GameFunctionsHelper {
     // 这个我就不动你的了，不是因为懒
@@ -97,5 +102,10 @@ public class GameFunctionsHelper {
 
     public static int goldCalculate(Monster monster){
         return new Random().nextInt((int) (monster.level+ monster.strength+ monster.defense),(int) (monster.level+ monster.strength+ monster.defense + 20));
+    }
+
+    //只是为了测试的临时方法
+    public static void abilityInfoOutput(Ability[] abilities){
+
     }
 }

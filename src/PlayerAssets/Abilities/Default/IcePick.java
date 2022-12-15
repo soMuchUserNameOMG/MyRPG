@@ -1,7 +1,8 @@
-package PlayerAssets.Abilities;
+package PlayerAssets.Abilities.Default;
 
 import Entities.Monsters.Monster;
 import Main.Main;
+import PlayerAssets.Abilities.Ability;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
@@ -14,6 +15,7 @@ public class IcePick extends Ability {
 
     public IcePick(String name, int special, int level, int coolDown) {
         super(name, special, level, coolDown);
+        this.setDesc("冰锥术就像是火球术的反面,但是伤害依然能够达到"+this.damage+"点"+",尽管变成了对敌人造成冰冻效果");
         this.MpReduce = 15;
     }
 

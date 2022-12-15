@@ -1,7 +1,8 @@
-package PlayerAssets.Abilities;
+package PlayerAssets.Abilities.Default;
 
 
 import Entities.Monsters.Monster;
+import PlayerAssets.Abilities.Ability;
 import Util.GameFunctionsHelper;
 
 import static Util.FrameUtil.OTHER_FRAME;
@@ -13,6 +14,7 @@ public class MutiAttack extends Ability {
 
     public MutiAttack(String name, int special, int level, int coolDown) {
         super(name, special, level, coolDown);
+        this.setDesc("多次连斩能够每次给敌人造成"+this.damage+"点的不俗伤害"+"并且一次性可以击打出"+this.frequency+"次攻击,且随着升级而提升");
     }
 
     @Override

@@ -1,7 +1,8 @@
-package PlayerAssets.Abilities;
+package PlayerAssets.Abilities.Default;
 
 import Entities.Monsters.Monster;
 import Main.Main;
+import PlayerAssets.Abilities.Ability;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
@@ -13,6 +14,7 @@ public class SelfHeal extends Ability {
 
     public SelfHeal(String name, int special, int level, int coolDown) {
         super(name, special, level, coolDown);
+        this.setDesc("治疗术可以给你在战斗中带来"+this.healValue+"点的生命回复");
         this.MpReduce = 20;
     }
 

@@ -1,9 +1,10 @@
-package PlayerAssets.Abilities;
+package PlayerAssets.Abilities.Default;
 
 import Buffs.Poison;
 import Entities.Monsters.Bosses.Boss;
 import Entities.Monsters.Monster;
 import Main.Main;
+import PlayerAssets.Abilities.Ability;
 import PlayerAssets.Player;
 import Util.GameFunctionsHelper;
 
@@ -16,6 +17,7 @@ public class PoisonMist extends Ability {
     public PoisonMist(String name, int special, int level, int coolDown) {
         super(name, special, level, coolDown);
         this.MpReduce = 25;
+        this.setDesc("毒雾术可以释放出一圈剧毒的雾气而使敌人中毒,雾气能够每次造成"+this.damage+"点无视护甲的伤害,并且持续"+this.time+"个回合");
     }
 
     @Override
@@ -27,7 +29,13 @@ public class PoisonMist extends Ability {
         }
         OTHER_FRAME.write("你选择释放了" + this.name);
         if(!(m instanceof Boss)) m.newBuff(new Poison(damage, time));
+        if(m instanceof Boss) {
+            OTHER_FRAME.write("你的毒雾术对Boss级生物无效!");
+            OTHER_FRAME.out();
+            return 0;
+        }
         OTHER_FRAME.write("对怪物造成了中毒效果!");
+        OTHER_FRAME.out();
         return 0;
     }
 

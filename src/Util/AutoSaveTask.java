@@ -1,7 +1,7 @@
 package Util;
 
 import PlayerAssets.Abilities.Ability;
-import PlayerAssets.Abilities.EmptyAbility;
+import PlayerAssets.Abilities.Default.EmptyAbility;
 import PlayerAssets.Player;
 
 

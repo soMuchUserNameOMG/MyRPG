@@ -7,6 +7,8 @@ import PlayerAssets.Player;
 import java.io.Serial;
 import java.io.Serializable;
 
+import static Util.FrameUtil.OTHER_FRAME;
+
 public abstract class Ability implements Serializable {
     @Serial
     private static final long serialVersionUID = 1500122385L;
@@ -19,6 +21,8 @@ public abstract class Ability implements Serializable {
     public int LastRelease = -1;
 
     public Player p;
+
+    private String desc;
 
     public Ability(String name, int special, int level, int coolDown) {
         this.name = name;
@@ -43,5 +47,22 @@ public abstract class Ability implements Serializable {
 
     public boolean mpJudge() {
         return !(p.MP - this.MpReduce < 0);
+    }
+
+    public void info(){
+        OTHER_FRAME.write("技能名:"+this.name);
+        OTHER_FRAME.write("等级:"+this.level);
+        OTHER_FRAME.write("消耗MP:"+this.MpReduce);
+        OTHER_FRAME.write("释放间隔:"+this.coolDown);
+        OTHER_FRAME.write(this.getDesc());
+        OTHER_FRAME.write("=================================================================================================");
+    }
+
+    public String getDesc(){
+        return desc;
+    }
+
+    public void setDesc(String desc){
+        this.desc = desc;
     }
 }
